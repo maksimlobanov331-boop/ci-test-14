@@ -1,4 +1,13 @@
-FROM mcr.microsoft.com/powershell:latest
+FROM mcr.microsoft.com/powershell:lts-ubuntu-22.04
 WORKDIR /app
-COPY ConvertTo-Fahrenheit.ps1 .
-CMD ["pwsh", "-Command", ". ./ConvertTo-Fahrenheit.ps1; ConvertTo-Fahrenheit -Celsius 100"]
+COPY . .
+RUN pwsh -NoProfile -Command "Install-Module Pester -Force -SkipPublisherCheck; Invoke-Pester -Path ./Tests.ps1 -CI"
+
+# в Tests.ps1, внутри Describe:
+It 'converts <c> C to <f> F' -ForEach @(
+    @{ c = 10;  f = 50 },
+    @{ c = 20;  f = 68 },
+    @{ c = -10; f = 14 }
+) {
+    ConvertTo-Fahrenheit -Celsius $c | Should -Be $f
+}
