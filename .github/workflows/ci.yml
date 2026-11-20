@@ -13,7 +13,7 @@ jobs:
         shell: pwsh
         run: |
           Install-Module -Name PSScriptAnalyzer -Force
-          Invoke-ScriptAnalyzer -Path ./Convert-Temperature.ps1 -Severity Error,Warning -EnableExit
+          Invoke-ScriptAnalyzer -Path ./ConvertTo-Fahrenheit.ps1 -Severity Error,Warning -EnableExit
   test:
     runs-on: windows-latest
     needs: lint
