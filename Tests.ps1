@@ -8,3 +8,10 @@ Describe 'ConvertTo-Fahrenheit' {
     It 'returns 97.88 for 36.6' { ConvertTo-Fahrenheit -Celsius 36.6 | Should -Be 97.88 }
     It 'throws on text input'   { { ConvertTo-Fahrenheit -Celsius 'abc' } | Should -Throw }
 }
+    It 'converts <c> C to <f> F' -ForEach @(
+        @{ c = 10;  f = 50 },
+        @{ c = 20;  f = 68 },
+        @{ c = -10; f = 14 }
+    ) {
+        ConvertTo-Fahrenheit -Celsius $c | Should -Be $f
+    }
