@@ -27,14 +27,14 @@ jobs:
           $config.Run.Path = './Tests.ps1'
           $config.Run.Exit = $true
           $config.CodeCoverage.Enabled = $true
-          $config.CodeCoverage.Path = './Convert-Temperature.ps1'
+          $config.CodeCoverage.Path = './ConvertTo-Fahrenheit.ps1'
           $config.Output.Verbosity = 'Detailed'
           Invoke-Pester -Configuration $config
       - name: Upload script
         uses: actions/upload-artifact@v4
         with:
           name: my-script
-          path: Convert-Temperature.ps1
+          path: ConvertTo-Fahrenheit.ps1
       - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:
@@ -46,4 +46,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build image
-        run: docker build -t ci-test-14 
+        run: docker build -t ci-test-14 .
