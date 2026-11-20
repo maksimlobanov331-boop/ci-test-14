@@ -22,7 +22,7 @@ jobs:
       - name: Pester with coverage
         shell: pwsh
         run: |
-          Install-Module -Name Pester -Force -SkipPublisherCheck
+          Install-Module Pester -RequiredVersion 5.7.1 -Force -SkipPublisherCheck
           $config = New-PesterConfiguration
           $config.Run.Path = './Tests.ps1'
           $config.Run.Exit = $true
