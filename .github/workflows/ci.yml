@@ -1,48 +1,30 @@
 name: CI
-on:
-  push:
-  pull_request:
-  schedule:
-    - cron: '0 2 * * *'
+
+on: [push, pull_request]
+
 jobs:
   lint:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: PSScriptAnalyzer
         shell: pwsh
         run: |
-          Install-Module -Name PSScriptAnalyzer -Force
-          Invoke-ScriptAnalyzer -Path ./ConvertTo-Fahrenheit.ps1 -Severity Error,Warning -EnableExit
+          Install-Module PSScriptAnalyzer -Force
+          Invoke-ScriptAnalyzer -Path . -Recurse -EnableExit
+
   test:
-    runs-on: windows-latest
-    needs: lint
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Pester with coverage
+      - name: Pester
         shell: pwsh
         run: |
           Install-Module Pester -RequiredVersion 5.7.1 -Force -SkipPublisherCheck
-          $config = New-PesterConfiguration
-          $config.Run.Path = './Tests.ps1'
-          $config.Run.Exit = $true
-          $config.CodeCoverage.Enabled = $true
-          $config.CodeCoverage.Path = './ConvertTo-Fahrenheit.ps1'
-          $config.Output.Verbosity = 'Detailed'
-          Invoke-Pester -Configuration $config
-      - name: Upload script
-        uses: actions/upload-artifact@v4
-        with:
-          name: my-script
-          path: ConvertTo-Fahrenheit.ps1
-      - name: Upload coverage
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage
-          path: coverage.xml
+          Invoke-Pester -Path ./Tests.ps1 -Output Detailed -CI
+
   docker:
     runs-on: ubuntu-latest
-    needs: test
     steps:
       - uses: actions/checkout@v4
       - name: Build image
